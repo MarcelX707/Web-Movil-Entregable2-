@@ -1,0 +1,342 @@
+/* src/theme/global.css */
+
+/* ── Autenticación ───────────────────────────────── */
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 75vh;
+  padding: 1.5rem;
+}
+
+.auth-logo {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.auth-logo img {
+  height: 80px;
+  margin-bottom: 0.5rem;
+}
+
+.auth-logo h2 {
+  font-size: 1.1rem;
+  color: var(--ion-color-primary);
+  margin: 0;
+}
+
+.auth-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  padding: 2rem;
+  width: 100%;
+  max-width: 420px;
+}
+
+.auth-card h3 {
+  text-align: center;
+  font-size: 1.4rem;
+  color: var(--ion-color-primary);
+  margin-bottom: 1.5rem;
+}
+
+.social-btn {
+  margin-bottom: 0.75rem !important;
+  --border-radius: 25px;
+}
+
+.google-btn {
+  --color: #DB4437;
+  --border-color: #DB4437;
+}
+
+.claveunica-btn {
+  --color: var(--ion-color-primary);
+  --border-color: var(--ion-color-primary);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 1rem 0;
+  color: var(--ion-color-medium);
+  font-size: 0.85rem;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #ddd;
+}
+
+.divider span {
+  margin: 0 0.5rem;
+}
+
+.submit-btn {
+  margin-top: 1rem !important;
+  --border-radius: 8px;
+}
+
+.auth-error {
+  font-size: 0.85rem;
+  margin: 0.5rem 0;
+  padding-left: 0.5rem;
+}
+
+.auth-link {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+/* ── Footer ──────────────────────────────────────── */
+.footer-content {
+  display: flex;
+  gap: 3rem;
+  padding: 0.75rem 1.5rem;
+  color: var(--footer-text);
+}
+
+.footer-section ul {
+  list-style: disc;
+  padding-left: 1.2rem;
+  margin: 0.25rem 0 0;
+  font-size: 0.82rem;
+}
+
+.footer-section a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+/* ── Menú lateral ─────────────────────────────────── */
+.menu-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.menu-user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.menu-user-info p {
+  margin: 0.5rem 0 0.25rem;
+  font-weight: 600;
+}
+
+.role-badge {
+  background: var(--ion-color-primary);
+  color: #fff;
+  border-radius: 12px;
+  padding: 2px 10px;
+  font-size: 0.75rem;
+}
+
+.menu-item {
+  --padding-start: 16px;
+}
+
+.menu-footer {
+  padding: 1rem;
+  border-top: 1px solid #eee;
+}
+
+/* ── Dashboard ───────────────────────────────────── */
+.dashboard-card {
+  height: 100%;
+  text-align: center;
+  transition: transform 0.15s ease;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-3px);
+}
+
+.dashboard-card ion-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* ── Perfil ──────────────────────────────────────── */
+.profile-avatar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+  gap: 0.75rem;
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  background: var(--ion-color-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-section-title {
+  padding: 0.75rem 1rem 0.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ion-color-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.profile-actions {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* ── Búsqueda ────────────────────────────────────── */
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+}
+
+.filter-row ion-select {
+  flex: 1;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  text-align: center;
+}
+
+/* ── Reportes ─────────────────────────────────────── */
+.report-preview {
+  min-height: 120px;
+  background: var(--ion-color-light);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ion-color-medium);
+}
+
+.preview-placeholder {
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.report-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0 1rem;
+}
+
+/* ── Hoja de Ruta ─────────────────────────────────── */
+.roadmap-item {
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+}
+
+.dependencias {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  color: var(--ion-color-medium);
+  margin-top: 4px;
+}
+
+.roadmap-footer-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  padding: 1rem;
+}
+
+/* ── Documentos ───────────────────────────────────── */
+.doc-admin-actions {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+}
+
+/* ── Registro ─────────────────────────────────────── */
+.register-card {
+  margin: 1rem auto;
+  max-width: 520px;
+}
+
+.terms-item {
+  margin-top: 0.5rem;
+}
+
+/* ── Responsive ───────────────────────────────────── */
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .auth-card {
+    padding: 1.5rem;
+  }
+}
+
+/* ── FORZAR FONDO CLARO EN TODA LA APP ────────────── */
+/* Necesario para anular el tema dark del sistema operativo */
+ion-content {
+  --background: #f0f2f7;
+  --color: #1a1a2e;
+}
+
+ion-page {
+  background: #f0f2f7;
+}
+
+/* Footer con fondo municipal */
+ion-footer ion-toolbar {
+  --background: #8a96b0 !important;
+  --color: #ffffff !important;
+}
+
+ion-footer ion-toolbar a {
+  color: #ffffff;
+}
+
+ion-footer ion-toolbar strong {
+  color: #ffffff;
+}
+
+/* Tarjetas del dashboard con borde sutil */
+.dashboard-card {
+  border: 1px solid #e0e3eb;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+}
+
+.dashboard-card ion-card-title {
+  color: #1a1a2e !important;
+  font-size: 1rem;
+  margin-top: 0.5rem;
+}
+
+.dashboard-card ion-card-content {
+  color: #5b6b8a !important;
+  font-size: 0.88rem;
+}

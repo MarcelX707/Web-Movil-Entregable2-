@@ -1,0 +1,135 @@
+/* src/theme/variables.css */
+/* Paleta institucional - Municipalidad de Santo Domingo */
+/* FUERZA TEMA CLARO — elimina dark mode automático de Ionic */
+
+:root {
+  /* ── Color principal: azul grisáceo municipal ── */
+  --ion-color-primary: #5b6b8a;
+  --ion-color-primary-rgb: 91, 107, 138;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #4f5e7a;
+  --ion-color-primary-tint: #6b7a99;
+
+  --ion-color-secondary: #4a90d9;
+  --ion-color-secondary-rgb: 74, 144, 217;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #4080c3;
+  --ion-color-secondary-tint: #5c9edf;
+
+  --ion-color-tertiary: #7b5ea7;
+  --ion-color-tertiary-rgb: 123, 94, 167;
+  --ion-color-tertiary-contrast: #ffffff;
+  --ion-color-tertiary-contrast-rgb: 255, 255, 255;
+  --ion-color-tertiary-shade: #6c5394;
+  --ion-color-tertiary-tint: #886eb0;
+
+  --ion-color-success: #2dd36f;
+  --ion-color-success-rgb: 45, 211, 111;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-shade: #28ba62;
+  --ion-color-success-tint: #42d77d;
+
+  --ion-color-warning: #ffc409;
+  --ion-color-warning-rgb: 255, 196, 9;
+  --ion-color-warning-contrast: #000000;
+  --ion-color-warning-shade: #e0ac08;
+  --ion-color-warning-tint: #ffca22;
+
+  --ion-color-danger: #eb445a;
+  --ion-color-danger-rgb: 235, 68, 90;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-shade: #cf3c4f;
+  --ion-color-danger-tint: #ed576b;
+
+  --ion-color-medium: #92949c;
+  --ion-color-medium-rgb: 146, 148, 156;
+  --ion-color-medium-contrast: #ffffff;
+  --ion-color-medium-shade: #808289;
+  --ion-color-medium-tint: #9d9fa6;
+
+  --ion-color-light: #f4f5f8;
+  --ion-color-light-rgb: 244, 245, 248;
+  --ion-color-light-contrast: #000000;
+  --ion-color-light-shade: #d7d8da;
+  --ion-color-light-tint: #f5f6f9;
+
+  --ion-color-dark: #222428;
+  --ion-color-dark-rgb: 34, 36, 40;
+  --ion-color-dark-contrast: #ffffff;
+  --ion-color-dark-shade: #1e2023;
+  --ion-color-dark-tint: #383a3e;
+
+  /* ── Fondos y superficies: SIEMPRE CLARO ── */
+  --ion-background-color: #f0f2f7;
+  --ion-background-color-rgb: 240, 242, 247;
+  --ion-text-color: #1a1a2e;
+  --ion-text-color-rgb: 26, 26, 46;
+  --ion-item-background: #ffffff;
+  --ion-card-background: #ffffff;
+  --ion-toolbar-background: #5b6b8a;
+  --ion-toolbar-color: #ffffff;
+  --ion-tab-bar-background: #ffffff;
+  --ion-tab-bar-color: #92949c;
+  --ion-tab-bar-color-selected: #5b6b8a;
+  --ion-overlay-background-color: #ffffff;
+
+  /* ── Footer municipal ── */
+  --footer-bg: #8a96b0;
+  --footer-text: #ffffff;
+
+  /* ── Tipografía ── */
+  --ion-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ── FORZAR TEMA CLARO: anular dark mode de Ionic y del sistema ── */
+body,
+.ios body,
+.md body {
+  --ion-background-color: #f0f2f7 !important;
+  --ion-background-color-rgb: 240, 242, 247 !important;
+  --ion-text-color: #1a1a2e !important;
+  --ion-text-color-rgb: 26, 26, 46 !important;
+  --ion-item-background: #ffffff !important;
+  --ion-card-background: #ffffff !important;
+  --ion-toolbar-background: #5b6b8a !important;
+  --ion-toolbar-color: #ffffff !important;
+  background-color: #f0f2f7 !important;
+  color: #1a1a2e !important;
+}
+
+ion-card {
+  background: #ffffff !important;
+  color: #1a1a2e !important;
+}
+
+ion-item {
+  --background: #ffffff;
+  --color: #1a1a2e;
+  --border-color: #e0e3eb;
+}
+
+ion-input,
+ion-select,
+ion-textarea {
+  --color: #1a1a2e;
+  --placeholder-color: #92949c;
+}
+
+ion-label {
+  color: #1a1a2e !important;
+}
+
+ion-toolbar {
+  --background: #5b6b8a;
+  --color: #ffffff;
+}
+
+ion-menu ion-content {
+  --background: #ffffff;
+}
+
+ion-menu ion-header ion-toolbar {
+  --background: #5b6b8a;
+}
