@@ -11,7 +11,7 @@ Este repositorio contiene el desarrollo del **Entregable 2**, el cual está divi
 
 ---
 
-## 🛠️ Requisitos Previos
+## Requisitos Previos
 
 Asegúrate de tener instalado en tu sistema:
 *   [Node.js](https://nodejs.org/) (Versión 16 o superior recomendada)
@@ -19,7 +19,7 @@ Asegúrate de tener instalado en tu sistema:
 
 ---
 
-## 🚀 Instalación y Configuración
+## Instalación y Configuración
 
 Sigue estos pasos detallados para instalar y poner en marcha el proyecto localmente:
 
@@ -54,7 +54,7 @@ DATABASE_URL=postgresql://neondb_owner:npg_TiS5pqhzwN4e@ep-purple-math-ap95ujnc-
 
 ---
 
-## 💻 Ejecución de la Aplicación
+## Ejecución de la App
 
 Para probar el proyecto completo en tu computadora local, debes levantar ambos servicios:
 
@@ -78,7 +78,7 @@ La aplicación web se abrirá automáticamente en tu navegador en: **`http://loc
 
 ---
 
-## 🔌 Endpoints de la API Backend
+## Endpoints de la API Backend
 
 La API implementa los siguientes endpoints clave para el entregable:
 
