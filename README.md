@@ -94,32 +94,282 @@ La API implementa los siguientes endpoints clave para el entregable:
 *   `DELETE /api/carpetas/:id`: Elimina una carpeta de la base de datos.
 *
 
-### Pruebas Funcionales de la API REST 
+# Pruebas Funcionales de la API REST 
 
-Resumen de Endpoints
+Las pruebas fueron realizadas utilizando **Postman** con el objetivo de verificar el correcto funcionamiento de los endpoints REST desarrollados para la aplicación. Se evaluaron tanto escenarios exitosos como casos de error, validando códigos de respuesta HTTP, mensajes JSON y restricciones implementadas en el backend.
 
-registro de nuevos usuarios:
-<img width="1577" height="905" alt="image" src="https://github.com/user-attachments/assets/23c9e736-2d0a-42ff-9d07-5cf63a2d141a" />
+---
 
-Inicio de sesion:
-auth login <img width="1544" height="862" alt="image" src="https://github.com/user-attachments/assets/27d602e1-edd6-48ab-8aca-6fbcd5d8518a" />
+# Pruebas Exitosas
 
-Actualizacion de perfil:
-profile id <img width="1573" height="844" alt="image" src="https://github.com/user-attachments/assets/62479610-6166-49ea-a337-a45c583bb952" />
+## 1. Registro de Usuario
 
-Obtener lista completa de carpetas municipales:
-get carpetas <img width="1576" height="907" alt="image" src="https://github.com/user-attachments/assets/40069db9-a95e-4a44-a70c-fb1ce4c3f025" />
+**Endpoint:** `POST /api/auth/register`
 
-Crear nueva carpeta municipal:
-post carpetas <img width="1581" height="939" alt="image" src="https://github.com/user-attachments/assets/a0820a26-50e4-4165-9cf2-4b428798cb56" />
+**Objetivo:** Registrar un nuevo usuario en el sistema.
 
-Modificar el nombre carpeta existente:
-put carpetas <img width="1590" height="908" alt="image" src="https://github.com/user-attachments/assets/12454f9c-ba3f-4bb5-b2fb-0f019186e370" />
+**Resultado esperado:**
 
-Eliminar una nueva carpeta de la db:
-delete <img width="1578" height="904" alt="image" src="https://github.com/user-attachments/assets/35038d23-389a-4efb-8262-a5f56b6753f0" />
+* Código HTTP: `201 Created`
+* Usuario registrado correctamente.
 
+**Evidencia:**
 
+![Registro Usuario](https://github.com/user-attachments/assets/23c9e736-2d0a-42ff-9d07-5cf63a2d141a)
+
+**Resultado obtenido:** Registro exitoso.
+
+---
+
+## 2. Inicio de Sesión
+
+**Endpoint:** `POST /api/auth/login`
+
+**Objetivo:** Autenticar usuario y generar token JWT.
+
+**Resultado esperado:**
+
+* Código HTTP: `200 OK`
+* Generación de token JWT.
+
+**Evidencia:**
+
+![Login](https://github.com/user-attachments/assets/27d602e1-edd6-48ab-8aca-6fbcd5d8518a)
+
+**Resultado obtenido:** Inicio de sesión exitoso.
+
+---
+
+## 3. Actualización de Perfil
+
+**Endpoint:** `PUT /api/auth/profile/:id`
+
+**Objetivo:** Modificar información del perfil del usuario.
+
+**Resultado esperado:**
+
+* Código HTTP: `200 OK`
+* Datos actualizados correctamente.
+
+**Evidencia:**
+
+![Actualizar Perfil](https://github.com/user-attachments/assets/62479610-6166-49ea-a337-a45c583bb952)
+
+**Resultado obtenido:** Perfil actualizado.
+
+---
+
+## 4. Obtener Carpetas Municipales
+
+**Endpoint:** `GET /api/carpetas`
+
+**Objetivo:** Recuperar todas las carpetas almacenadas.
+
+**Resultado esperado:**
+
+* Código HTTP: `200 OK`
+* Lista de carpetas en formato JSON.
+
+**Evidencia:**
+
+![GET Carpetas](https://github.com/user-attachments/assets/40069db9-a95e-4a44-a70c-fb1ce4c3f025)
+
+**Resultado obtenido:** Consulta exitosa.
+
+---
+
+## 5. Crear Carpeta Municipal
+
+**Endpoint:** `POST /api/carpetas`
+
+**Objetivo:** Crear una nueva carpeta municipal.
+
+**Resultado esperado:**
+
+* Código HTTP: `201 Created`
+* Carpeta almacenada correctamente.
+
+**Evidencia:**
+
+![POST Carpetas](https://github.com/user-attachments/assets/a0820a26-50e4-4165-9cf2-4b428798cb56)
+
+**Resultado obtenido:** Carpeta creada.
+
+---
+
+## 6. Actualizar Carpeta Municipal
+
+**Endpoint:** `PUT /api/carpetas/:id`
+
+**Objetivo:** Modificar el nombre de una carpeta existente.
+
+**Resultado esperado:**
+
+* Código HTTP: `200 OK`
+* Carpeta actualizada correctamente.
+
+**Evidencia:**
+
+![PUT Carpetas](https://github.com/user-attachments/assets/12454f9c-ba3f-4bb5-b2fb-0f019186e370)
+
+**Resultado obtenido:** Actualización exitosa.
+
+---
+
+## 7. Eliminar Carpeta Municipal
+
+**Endpoint:** `DELETE /api/carpetas/:id`
+
+**Objetivo:** Eliminar una carpeta de la base de datos.
+
+**Resultado esperado:**
+
+* Código HTTP: `200 OK`
+* Carpeta eliminada correctamente.
+
+**Evidencia:**
+
+![DELETE Carpetas](https://github.com/user-attachments/assets/35038d23-389a-4efb-8262-a5f56b6753f0)
+
+**Resultado obtenido:** Eliminación exitosa.
+
+---
+
+# Pruebas de Validación y Manejo de Errores
+
+Estas pruebas verifican que la API responda adecuadamente ante datos incorrectos o recursos inexistentes.
+
+---
+
+## 8. Login con Contraseña Incorrecta
+
+**Endpoint:** `POST /api/auth/login`
+
+**Objetivo:** Validar rechazo de credenciales inválidas.
+
+**Resultado esperado:**
+
+* Código HTTP: `401 Unauthorized`
+
+**Evidencia:**
+
+![Login Incorrecto](https://github.com/user-attachments/assets/cda88d61-d89d-4d69-9d50-0d0ed5335c59)
+
+**Resultado obtenido:** Error controlado correctamente.
+
+---
+
+## 9. Registro con Correo ya Existente
+
+**Endpoint:** `POST /api/auth/register`
+
+**Objetivo:** Evitar registros duplicados.
+
+**Resultado esperado:**
+
+* Código HTTP: `400 Bad Request`
+
+**Evidencia:**
+
+![Correo Existente](https://github.com/user-attachments/assets/b59df3e1-7e7f-4e54-a0a4-f093dca95f66)
+
+**Resultado obtenido:** Validación correcta de duplicados.
+
+---
+
+## 10. Registro sin Correo Electrónico
+
+**Endpoint:** `POST /api/auth/register`
+
+**Objetivo:** Validar campos obligatorios.
+
+**Resultado esperado:**
+
+* Código HTTP: `400 Bad Request`
+
+**Evidencia:**
+
+![Registro Sin Correo](https://github.com/user-attachments/assets/4705e7d9-015f-442b-8d62-7cbf35871528)
+
+**Resultado obtenido:** Validación de formulario exitosa.
+
+---
+
+## 11. Login con Campos Vacíos
+
+**Endpoint:** `POST /api/auth/login`
+
+**Objetivo:** Verificar validación de datos requeridos.
+
+**Resultado esperado:**
+
+* Código HTTP: `400 Bad Request`
+
+**Evidencia:**
+
+![Login Sin Datos](https://github.com/user-attachments/assets/2937a88f-dba9-470b-8b05-93fbec9cb5f9)
+
+**Resultado obtenido:** Error controlado correctamente.
+
+---
+
+## 12. Crear Carpeta sin Nombre
+
+**Endpoint:** `POST /api/carpetas`
+
+**Objetivo:** Verificar validación de campos obligatorios.
+
+**Resultado esperado:**
+
+* Código HTTP: `400 Bad Request`
+
+**Evidencia:**
+
+![Nombre Obligatorio](https://github.com/user-attachments/assets/9b0f9301-ac8c-424c-8588-e26da25775c8)
+
+**Resultado obtenido:** Validación aplicada correctamente.
+
+---
+
+## 13. Actualizar Carpeta Inexistente
+
+**Endpoint:** `PUT /api/carpetas/:id`
+
+**Objetivo:** Verificar manejo de recursos inexistentes.
+
+**Resultado esperado:**
+
+* Código HTTP: `404 Not Found`
+
+**Evidencia:**
+
+![PUT Carpeta Inexistente](https://github.com/user-attachments/assets/50ca28ee-c52c-4457-842c-4ff3071175dc)
+
+**Resultado obtenido:** Recurso inexistente detectado correctamente.
+
+---
+
+## 14. Eliminar Carpeta Inexistente
+
+**Endpoint:** `DELETE /api/carpetas/:id`
+
+**Objetivo:** Verificar manejo de eliminación sobre recursos inexistentes.
+
+**Resultado esperado:**
+
+* Código HTTP: `404 Not Found`
+
+**Evidencia:**
+
+![DELETE Carpeta Inexistente](https://github.com/user-attachments/assets/b9ba10a3-cb42-4e21-ac33-791e5787bf72)
+
+**Resultado obtenido:** Error controlado correctamente.
+
+---
+
+# Conclusión
+
+Las pruebas realizadas demuestran el correcto funcionamiento de la API REST, incluyendo autenticación mediante JWT, operaciones CRUD, validaciones de entrada, manejo de errores, protección frente a registros duplicados y control de recursos inexistentes. Los resultados obtenidos evidencian que la aplicación responde con códigos HTTP apropiados y mensajes JSON consistentes ante distintos escenarios de uso.
 
 
 
