@@ -1,1 +1,617 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modelo Relacional — Sistema de Trámites</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  :root {
+    --bg: #0b0e14;
+    --surface: #111520;
+    --border: #1e2535;
+    --accent1: #4fffb0;
+    --accent2: #4fc3ff;
+    --accent3: #ff6b6b;
+    --accent4: #ffc84a;
+    --accent5: #c084fc;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --pk: #4fffb0;
+    --fk: #4fc3ff;
+    --uk: #ffc84a;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    min-height: 100vh;
+    overflow-x: auto;
+  }
+
+  header {
+    padding: 2.5rem 3rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-end;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  header h1 span { color: var(--accent1); }
+
+  .subtitle {
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding-bottom: 3px;
+  }
+
+  .legend {
+    margin-left: auto;
+    display: flex;
+    gap: 1.4rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.68rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* ─── Canvas ─── */
+  .canvas {
+    padding: 3rem;
+    position: relative;
+    min-width: 1200px;
+  }
+
+  svg.relations {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── Tables ─── */
+  .grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(4, 260px);
+    grid-template-rows: auto;
+    gap: 2rem;
+    /* Named areas match positions in the spec */
+  }
+
+  .table-card {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--surface);
+    box-shadow: 0 0 0 0 transparent;
+    transition: box-shadow 0.25s;
+    position: relative;
+  }
+
+  .table-card:hover {
+    box-shadow: 0 0 28px -4px color-mix(in srgb, var(--accent-color) 35%, transparent);
+  }
+
+  .table-header {
+    background: color-mix(in srgb, var(--accent-color) 14%, var(--surface));
+    border-bottom: 2px solid var(--accent-color);
+    padding: 0.65rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .table-header h2 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: var(--accent-color);
+    letter-spacing: 0.05em;
+  }
+
+  .table-icon {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    box-shadow: 0 0 6px var(--accent-color);
+  }
+
+  .fields { list-style: none; }
+
+  .field {
+    display: grid;
+    grid-template-columns: 18px 1fr auto;
+    gap: 0.4rem;
+    align-items: start;
+    padding: 0.42rem 1rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+    font-size: 0.7rem;
+    line-height: 1.4;
+  }
+
+  .field:last-child { border-bottom: none; }
+
+  .field-badge {
+    font-size: 0.55rem;
+    font-weight: 600;
+    padding: 1px 3px;
+    border-radius: 2px;
+    letter-spacing: 0.04em;
+    margin-top: 2px;
+    text-align: center;
+  }
+
+  .badge-pk { background: color-mix(in srgb, var(--pk) 20%, transparent); color: var(--pk); border: 1px solid color-mix(in srgb, var(--pk) 40%, transparent); }
+  .badge-fk { background: color-mix(in srgb, var(--fk) 20%, transparent); color: var(--fk); border: 1px solid color-mix(in srgb, var(--fk) 40%, transparent); }
+  .badge-uk { background: color-mix(in srgb, var(--uk) 20%, transparent); color: var(--uk); border: 1px solid color-mix(in srgb, var(--uk) 40%, transparent); }
+
+  .field-name { color: var(--text); }
+  .field-type { color: var(--muted); font-size: 0.62rem; margin-top: 1px; }
+
+  .field-desc {
+    color: #3d5068;
+    font-size: 0.6rem;
+    text-align: right;
+    line-height: 1.3;
+    max-width: 110px;
+    word-break: break-word;
+  }
+
+  /* ─── Section labels ─── */
+  .section-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+    margin-top: 0.5rem;
+  }
+
+  /* ─── Relationship lines (SVG) ─── */
+  .rel-line { stroke-width: 1.5; fill: none; stroke-dasharray: 5 3; opacity: 0.6; }
+  .rel-line.solid { stroke-dasharray: none; }
+
+  /* ─── Module groups ─── */
+  .module-group {
+    grid-column: span 4;
+    display: contents;
+  }
+
+  /* ─── Positions via inline style ─── */
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="subtitle">Arquitectura de Base de Datos · v1.0</div>
+    <h1>Modelo <span>Relacional</span></h1>
+  </div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--pk)"></div>PK — Clave primaria</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--fk)"></div>FK — Clave foránea</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--uk)"></div>UK — Clave única</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--muted)"></div>— Relación</div>
+  </div>
+</header>
+
+<div class="canvas" id="canvas">
+
+  <!-- SVG overlay for relationship lines -->
+  <svg class="relations" id="svg-relations">
+    <defs>
+      <marker id="arrow-green" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+        <path d="M0,0 L0,6 L8,3 z" fill="#4fffb0" opacity="0.7"/>
+      </marker>
+      <marker id="arrow-blue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+        <path d="M0,0 L0,6 L8,3 z" fill="#4fc3ff" opacity="0.7"/>
+      </marker>
+      <marker id="arrow-purple" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+        <path d="M0,0 L0,6 L8,3 z" fill="#c084fc" opacity="0.7"/>
+      </marker>
+      <marker id="arrow-yellow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+        <path d="M0,0 L0,6 L8,3 z" fill="#ffc84a" opacity="0.7"/>
+      </marker>
+    </defs>
+  </svg>
+
+  <!-- ══════════════════════════════════════════
+       MÓDULO 1: Gestión de Usuarios y Roles
+  ══════════════════════════════════════════ -->
+  <p class="section-label">① Gestión de Usuarios y Roles</p>
+  <div style="display:flex; gap:2rem; margin-bottom:2.5rem; flex-wrap:wrap;">
+
+    <!-- roles -->
+    <div class="table-card" id="t-roles" style="--accent-color: var(--accent1); width:260px;">
+      <div class="table-header"><div class="table-icon"></div><h2>roles</h2></div>
+      <ul class="fields">
+        <li class="field">
+          <span class="field-badge badge-pk">PK</span>
+          <div><div class="field-name">id_rol</div><div class="field-type">SERIAL / INT</div></div>
+          <span class="field-desc">Identificador único</span>
+        </li>
+        <li class="field">
+          <span></span>
+          <div><div class="field-name">nombre_rol</div><div class="field-type">VARCHAR(50)</div></div>
+          <span class="field-desc">"usuario" / "administrador"</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- usuarios -->
+    <div class="table-card" id="t-usuarios" style="--accent-color: var(--accent1); width:260px;">
+      <div class="table-header"><div class="table-icon"></div><h2>usuarios</h2></div>
+      <ul class="fields">
+        <li class="field">
+          <span class="field-badge badge-pk">PK</span>
+          <div><div class="field-name">id_usuario</div><div class="field-type">SERIAL / INT</div></div>
+          <span class="field-desc">Identificador único</span>
+        </li>
+        <li class="field">
+          <span class="field-badge badge-uk">UK</span>
+          <div><div class="field-name">rut</div><div class="field-type">VARCHAR(12)</div></div>
+          <span class="field-desc">12.345.678-9</span>
+        </li>
+        <li class="field">
+          <span></span>
+          <div><div class="field-name">nombre</div><div class="field-type">VARCHAR(100)</div></div>
+          <span class="field-desc">Nombre del emprendedor</span>
+        </li>
+        <li class="field">
+          <span></span>
+          <div><div class="field-name">apellido</div><div class="field-type">VARCHAR(100)</div></div>
+          <span class="field-desc">Apellido</span>
+        </li>
+        <li class="field">
+          <span class="field-badge badge-uk">UK</span>
+          <div><div class="field-name">correo</div><div class="field-type">VARCHAR(150)</div></div>
+          <span class="field-desc">Login y notificaciones</span>
+        </li>
+        <li class="field">
+          <span></span>
+          <div><div class="field-name">contrasena_hash</div><div class="field-type">VARCHAR(255)</div></div>
+          <span class="field-desc">bcrypt (EP2)</span>
+        </li>
+        <li class="field">
+          <span></span>
+          <div><div class="field-name">region</div><div class="field-type">VARCHAR(100)</div></div>
+          <span class="field-desc">Región de residencia</span>
+        </li>
+        <li class="field">
+          <span></span>
+          <div><div class="field-name">comuna</div><div class="field-type">VARCHAR(100)</div></div>
+          <span class="field-desc">Comuna de residencia</span>
+        </li>
+        <li class="field">
+          <span class="field-badge badge-fk">FK</span>
+          <div><div class="field-name">id_rol</div><div class="field-type">INT</div></div>
+          <span class="field-desc">→ roles(id_rol)</span>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       MÓDULO 2: Trámites
+  ══════════════════════════════════════════ -->
+  <p class="section-label">② Módulo de Trámites y Búsqueda</p>
+  <div style="display:flex; gap:2rem; margin-bottom:2.5rem; flex-wrap:wrap;">
+
+    <!-- tipos_tramite -->
+    <div class="table-card" id="t-tipos" style="--accent-color: var(--accent2); width:260px;">
+      <div class="table-header"><div class="table-icon"></div><h2>tipos_tramite</h2></div>
+      <ul class="fields">
+        <li class="field">
+          <span class="field-badge badge-pk">PK</span>
+          <div><div class="field-name">id_tipo</div><div class="field-type">SERIAL / INT</div></div>
+          <span class="field-desc">Identificador único</span>
+        </li>
+        <li class="field">
+          <span></span>
+          <div><div class="field-name">nombre_tipo</div><div class="field-type">VARCHAR(50)</div></div>
+          <span class="field-desc">patente / permiso / certificado / licencia</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- estados_tramite -->
+    <div class="table-card" id="t-estados" style="--accent-color: var(--accent2); width:260px;">
+      <div class="table-header"><div class="table-icon"></div><h2>estados_tramite</h2></div>
+      <ul class="fields">
+        <li class="field">
+          <span class="field-badge badge-pk">PK</span>
+          <div><div class="field-name">id_estado</div><div class="field-type">SERIAL / INT</div></div>
+          <span class="field-desc">Identificador único</span>
+        </li>
+        <li class="field">
+          <span></span>
+          <div><div class="field-name">nombre_estado</div><div class="field-type">VARCHAR(50)</div></div>
+          <span class="field-desc">pendiente / en proceso / aprobado / rechazado</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- tramites -->
+    <div class="table-card" id="t-tramites" style="--accent-color: var(--accent2); width:260px;">
+      <div class="table-header"><div class="table-icon"></div><h2>tramites</h2></div>
+      <ul class="fields">
+        <li class="field">
+          <span class="field-badge badge-pk">PK</span>
+          <div><div class="field-name">id_tramite</div><div class="field-type">SERIAL / INT</div></div>
+          <span class="field-desc">Identificador del expediente</span>
+        </li>
+        <li class="field">
+          <span class="field-badge badge-fk">FK</span>
+          <div><div class="field-name">id_usuario</div><div class="field-type">INT</div></div>
+          <span class="field-desc">→ usuarios(id_usuario)</span>
+        </li>
+        <li class="field">
+          <span class="field-badge badge-fk">FK</span>
+          <div><div class="field-name">id_tipo</div><div class="field-type">INT</div></div>
+          <span class="field-desc">→ tipos_tramite(id_tipo)</span>
+        </li>
+        <li class="field">
+          <span class="field-badge badge-fk">FK</span>
+          <div><div class="field-name">id_estado</div><div class="field-type">INT</div></div>
+          <span class="field-desc">→ estados_tramite(id_estado)</span>
+        </li>
+        <li class="field">
+          <span></span>
+          <div><div class="field-name">fecha_creacion</div><div class="field-type">TIMESTAMP</div></div>
+          <span class="field-desc">Reportes por rango</span>
+        </li>
+        <li class="field">
+          <span></span>
+          <div><div class="field-name">fecha_actualizacion</div><div class="field-type">TIMESTAMP</div></div>
+          <span class="field-desc">Último cambio de estado</span>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       MÓDULO 3 & 4
+  ══════════════════════════════════════════ -->
+  <div style="display:flex; gap:3rem; flex-wrap:wrap;">
+
+    <div>
+      <p class="section-label">③ Hoja de Ruta Dinámica</p>
+      <!-- fases_ruta -->
+      <div class="table-card" id="t-fases" style="--accent-color: var(--accent5); width:260px;">
+        <div class="table-header"><div class="table-icon"></div><h2>fases_ruta</h2></div>
+        <ul class="fields">
+          <li class="field">
+            <span class="field-badge badge-pk">PK</span>
+            <div><div class="field-name">id_fase</div><div class="field-type">SERIAL / INT</div></div>
+            <span class="field-desc">Identificador de fase</span>
+          </li>
+          <li class="field">
+            <span class="field-badge badge-fk">FK</span>
+            <div><div class="field-name">id_tramite</div><div class="field-type">INT</div></div>
+            <span class="field-desc">→ tramites(id_tramite)</span>
+          </li>
+          <li class="field">
+            <span></span>
+            <div><div class="field-name">nombre_tarea</div><div class="field-type">VARCHAR(150)</div></div>
+            <span class="field-desc">Etapa (definida por admin)</span>
+          </li>
+          <li class="field">
+            <span></span>
+            <div><div class="field-name">estado_fase</div><div class="field-type">VARCHAR(50)</div></div>
+            <span class="field-desc">completado / en progreso / pendiente</span>
+          </li>
+          <li class="field">
+            <span class="field-badge badge-fk">FK</span>
+            <div><div class="field-name">id_dependencia</div><div class="field-type">INT (nullable)</div></div>
+            <span class="field-desc">→ fases_ruta(id_fase) autorref.</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div>
+      <p class="section-label">④ Repositorio Documental</p>
+      <div style="display:flex; gap:2rem; flex-wrap:wrap;">
+
+        <!-- carpetas -->
+        <div class="table-card" id="t-carpetas" style="--accent-color: var(--accent4); width:260px;">
+          <div class="table-header"><div class="table-icon"></div><h2>carpetas</h2></div>
+          <ul class="fields">
+            <li class="field">
+              <span class="field-badge badge-pk">PK</span>
+              <div><div class="field-name">id_carpeta</div><div class="field-type">SERIAL / INT</div></div>
+              <span class="field-desc">Identificador único</span>
+            </li>
+            <li class="field">
+              <span></span>
+              <div><div class="field-name">nombre_carpeta</div><div class="field-type">VARCHAR(100)</div></div>
+              <span class="field-desc">Resoluciones / Formularios / Informes…</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- documentos -->
+        <div class="table-card" id="t-documentos" style="--accent-color: var(--accent4); width:260px;">
+          <div class="table-header"><div class="table-icon"></div><h2>documentos</h2></div>
+          <ul class="fields">
+            <li class="field">
+              <span class="field-badge badge-pk">PK</span>
+              <div><div class="field-name">id_documento</div><div class="field-type">SERIAL / INT</div></div>
+              <span class="field-desc">Identificador único</span>
+            </li>
+            <li class="field">
+              <span class="field-badge badge-fk">FK</span>
+              <div><div class="field-name">id_carpeta</div><div class="field-type">INT</div></div>
+              <span class="field-desc">→ carpetas(id_carpeta)</span>
+            </li>
+            <li class="field">
+              <span></span>
+              <div><div class="field-name">nombre_archivo</div><div class="field-type">VARCHAR(255)</div></div>
+              <span class="field-desc">Nombre original del archivo</span>
+            </li>
+            <li class="field">
+              <span></span>
+              <div><div class="field-name">ruta_almacenamiento</div><div class="field-type">VARCHAR(255)</div></div>
+              <span class="field-desc">URL / path AWS</span>
+            </li>
+            <li class="field">
+              <span class="field-badge badge-fk">FK</span>
+              <div><div class="field-name">subido_por</div><div class="field-type">INT</div></div>
+              <span class="field-desc">→ usuarios(id_usuario)</span>
+            </li>
+            <li class="field">
+              <span></span>
+              <div><div class="field-name">fecha_subida</div><div class="field-type">TIMESTAMP</div></div>
+              <span class="field-desc">Integración al repositorio</span>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div><!-- /canvas -->
+
+<script>
+// Draw relationship lines between tables using element positions
+const canvas = document.getElementById('canvas');
+const svg = document.getElementById('svg-relations');
+
+const rels = [
+  // [from_id, to_id, color, marker]
+  ['t-roles',     't-usuarios',   '#4fffb0', 'arrow-green'],
+  ['t-usuarios',  't-tramites',   '#4fc3ff', 'arrow-blue'],
+  ['t-tipos',     't-tramites',   '#4fc3ff', 'arrow-blue'],
+  ['t-estados',   't-tramites',   '#4fc3ff', 'arrow-blue'],
+  ['t-tramites',  't-fases',      '#c084fc', 'arrow-purple'],
+  ['t-carpetas',  't-documentos', '#ffc84a', 'arrow-yellow'],
+  ['t-usuarios',  't-documentos', '#ffc84a', 'arrow-yellow'],
+  // self-ref fases
+  ['t-fases',     't-fases',      '#c084fc', 'arrow-purple'],
+];
+
+function midRight(el) {
+  const r = el.getBoundingClientRect();
+  const cr = canvas.getBoundingClientRect();
+  return { x: r.right - cr.left, y: r.top - cr.top + r.height / 2 };
+}
+function midLeft(el) {
+  const r = el.getBoundingClientRect();
+  const cr = canvas.getBoundingClientRect();
+  return { x: r.left - cr.left, y: r.top - cr.top + r.height / 2 };
+}
+function midBottom(el) {
+  const r = el.getBoundingClientRect();
+  const cr = canvas.getBoundingClientRect();
+  return { x: r.left - cr.left + r.width / 2, y: r.bottom - cr.top };
+}
+function midTop(el) {
+  const r = el.getBoundingClientRect();
+  const cr = canvas.getBoundingClientRect();
+  return { x: r.left - cr.left + r.width / 2, y: r.top - cr.top };
+}
+
+function drawLines() {
+  svg.querySelectorAll('path.dyn').forEach(p => p.remove());
+
+  rels.forEach(([fid, tid, color, marker]) => {
+    const from = document.getElementById(fid);
+    const to   = document.getElementById(tid);
+    if (!from || !to) return;
+
+    let p, d;
+
+    if (fid === tid) {
+      // Self-referencing arc for fases_ruta
+      const r = from.getBoundingClientRect();
+      const cr = canvas.getBoundingClientRect();
+      const x = r.right - cr.left;
+      const y = r.bottom - cr.top - 30;
+      d = `M ${x} ${y} C ${x+60} ${y+10}, ${x+60} ${y+50}, ${x} ${y+50}`;
+    } else {
+      const fr = from.getBoundingClientRect();
+      const tr = to.getBoundingClientRect();
+      const cr = canvas.getBoundingClientRect();
+
+      // Determine connection direction
+      const fx_r = fr.right - cr.left;
+      const fx_l = fr.left - cr.left;
+      const fy_m = fr.top - cr.top + fr.height/2;
+      const tx_r = tr.right - cr.left;
+      const tx_l = tr.left - cr.left;
+      const ty_m = tr.top - cr.top + tr.height/2;
+
+      let sx, sy, ex, ey;
+
+      // If from is clearly left of to
+      if (fx_r < tx_l + 20) {
+        sx = fx_r; sy = fy_m;
+        ex = tx_l; ey = ty_m;
+      } else if (fx_l > tx_r - 20) {
+        sx = fx_l; sy = fy_m;
+        ex = tx_r; ey = ty_m;
+      } else {
+        // vertical
+        const fy_b = fr.bottom - cr.top;
+        const ty_t = tr.top - cr.top;
+        sx = fr.left - cr.left + fr.width/2;
+        sy = fy_b;
+        ex = tr.left - cr.left + tr.width/2;
+        ey = ty_t;
+      }
+
+      const mx = (sx + ex) / 2;
+      d = `M ${sx} ${sy} C ${mx} ${sy}, ${mx} ${ey}, ${ex} ${ey}`;
+    }
+
+    p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    p.setAttribute('d', d);
+    p.setAttribute('class', 'rel-line dyn');
+    p.setAttribute('stroke', color);
+    p.setAttribute('marker-end', `url(#${marker})`);
+    svg.appendChild(p);
+  });
+}
+
+// Draw after layout settles
+setTimeout(drawLines, 100);
+window.addEventListener('resize', drawLines);
+</script>
+
+</body>
+</html>
