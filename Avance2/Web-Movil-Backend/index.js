@@ -142,6 +142,12 @@ app.post('/api/auth/register', async (req, res) => {
       return res.status(400).json({ error: 'El correo electrónico ya está registrado' });
     }
 
+    // Verificar si el RUT ya está registrado
+    const rutExist = await pool.query('SELECT * FROM usuarios WHERE rut = $1', [rut]);
+    if (rutExist.rows.length > 0) {
+      return res.status(400).json({ error: 'El RUT ya está registrado' });
+    }
+
     // Encriptar la contraseña con bcrypt
     const saltRounds = 10;
     const contrasenaHash = await bcrypt.hash(password, saltRounds);
@@ -296,6 +302,48 @@ app.put('/api/auth/profile/:id', async (req, res) => {
   } catch (error) {
     console.error('Error al actualizar perfil:', error.message);
     res.status(500).json({ error: 'Error interno del servidor al actualizar perfil' });
+  }
+});
+
+// 4. DELETE: Eliminar un usuario
+app.delete('/api/auth/users/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await pool.query(
+      'DELETE FROM usuarios WHERE id_usuario = $1 RETURNING *',
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    res.status(200).json({ 
+      mensaje: 'Usuario eliminado exitosamente', 
+      usuario: {
+        id: result.rows[0].id_usuario.toString(),
+        nombre: result.rows[0].nombre,
+        apellido: result.rows[0].apellido,
+        email: result.rows[0].correo,
+        rut: result.rows[0].rut
+      }
+    });
+  } catch (error) {
+    console.error('Error al eliminar usuario:', error.message);
+    res.status(500).json({ error: 'Error interno del servidor al eliminar usuario' });
+  }
+});
+
+// 5. GET: Obtener todos los usuarios (útil para pruebas y desarrollo)
+app.get('/api/auth/users', async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT id_usuario, nombre, apellido, correo, rut, id_rol FROM usuarios ORDER BY id_usuario ASC'
+    );
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error('Error al obtener usuarios:', error.message);
+    res.status(500).json({ error: 'Error interno del servidor al obtener usuarios' });
   }
 });
 

@@ -86,6 +86,9 @@ const DocumentsPage: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
+          <IonButtons slot="start">
+            <IonBackButton defaultHref="/dashboard" text="Volver" />
+          </IonButtons>
           <IonTitle>Repositorio Documental</IonTitle>
           <IonButtons slot="end">
             <IonButton onClick={handleLogout}>
