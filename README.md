@@ -365,7 +365,7 @@ Estas pruebas verifican que la API responda adecuadamente ante datos incorrectos
 
 **Resultado obtenido:** Error controlado correctamente.
 
-15. Acceso a Ruta Protegida sin Token JWT
+##15. Acceso a Ruta Protegida sin Token JWT
 
 Endpoint: PUT /api/auth/profile/:id
 
