@@ -365,6 +365,39 @@ Estas pruebas verifican que la API responda adecuadamente ante datos incorrectos
 
 **Resultado obtenido:** Error controlado correctamente.
 
+15. Acceso a Ruta Protegida sin Token JWT
+
+Endpoint: PUT /api/auth/profile/:id
+
+Objetivo: Verificar que el sistema impida el acceso a rutas protegidas cuando no se proporciona un token JWT válido en la cabecera de autorización.
+
+Resultado esperado:
+
+Código HTTP: 403 Forbidden
+Mensaje indicando que no se proporcionó un token de acceso.
+
+**Evidencia:**
+
+<img width="1573" height="898" alt="image" src="https://github.com/user-attachments/assets/e5d2933a-28d6-484d-938d-3aee43e337db" />
+<img width="1576" height="885" alt="image" src="https://github.com/user-attachments/assets/14f30182-9d25-43ea-a72c-c32b3012fe50" />
+
+
+
+Respuesta obtenida:
+
+{
+  "error": "Acceso denegado: token no proporcionado"
+}
+
+Resultado obtenido: El middleware de autenticación bloquea correctamente el acceso a la ruta protegida cuando no se envía el token JWT.
+
+Validación realizada:
+
+No se envió cabecera Authorization.
+El servidor rechazó la solicitud.
+Se devolvió el código HTTP correspondiente.
+No se permitió la modificación de datos del usuario.
+
 ---
 
 # Conclusión
